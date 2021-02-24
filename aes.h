@@ -12,10 +12,12 @@ extern uchar_t sbox[BSIZE];
 
 void hexdump(uchar_t *, int r, int c);
 void dump_block(uchar_t *);
-void gen_subkeys(uchar_t * key, uchar_t ** subkeys);
 
+void gen_subkeys(uchar_t * key, uchar_t ** subkeys);
+void bsub(uchar_t * msg, int mlen);
 
 void circular_rotate(uchar_t * msg, int start, int end);
+
 uchar_t *encrypt(uchar_t * msg, uchar_t * key);
 uchar_t *decrypt(uchar_t * msg, uchar_t * key);
 

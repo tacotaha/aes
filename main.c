@@ -6,24 +6,19 @@
 
 int main(int argc, char **argv) {
   const char *msg = "Hello World!";
-  const char *key = "password";
-  uchar_t *tmp = malloc(sizeof(uchar_t) * strlen(msg));
+  //const char *key = "password";
+  const int mlen = strlen(msg);
 
-  memcpy(tmp, msg, strlen(msg));
+  uchar_t *tmp = malloc(sizeof(uchar_t) * mlen);
 
-  printf("msg: %s\n", msg);
-  printf("key: %s\n", key);
-
-  circular_rotate(tmp, 0, strlen((char *) tmp));
-  circular_rotate(tmp, 0, strlen((char *) tmp));
+  memcpy(tmp, msg, mlen);
 
   printf("%s\n", tmp);
+
+  hexdump(tmp, 1, mlen);
+  bsub(tmp, mlen);
+  hexdump(tmp, 1, mlen);
+
   free(tmp);
-
-  //r1 = encrypt(msg, key);
-  //r2 = decrypt(r1, key);
-
-  hexdump(sbox, 16, 16);
-
   return 0;
 }
