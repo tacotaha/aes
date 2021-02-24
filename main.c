@@ -5,23 +5,25 @@
 #include "aes.h"
 
 int main(int argc, char **argv) {
-    const char* msg = "Hello World!";
-    const char* key = "password";
-    char *tmp = malloc(sizeof(char) * strlen(msg));
+  const char *msg = "Hello World!";
+  const char *key = "password";
+  uchar_t *tmp = malloc(sizeof(uchar_t) * strlen(msg));
 
-    memcpy(tmp, msg, strlen(msg));
+  memcpy(tmp, msg, strlen(msg));
 
-    printf("msg: %s\n", msg);
-    printf("key: %s\n", key);
+  printf("msg: %s\n", msg);
+  printf("key: %s\n", key);
 
-    circular_rotate(tmp, 0, strlen(tmp));
-    circular_rotate(tmp, 0, strlen(tmp));
+  circular_rotate(tmp, 0, strlen((char *) tmp));
+  circular_rotate(tmp, 0, strlen((char *) tmp));
 
-    printf("%s\n", tmp);
-    free(tmp);
+  printf("%s\n", tmp);
+  free(tmp);
 
-    //r1 = encrypt(msg, key);
-    //r2 = decrypt(r1, key);
+  //r1 = encrypt(msg, key);
+  //r2 = decrypt(r1, key);
 
-    return 0;
+  hexdump(sbox, 16, 16);
+
+  return 0;
 }

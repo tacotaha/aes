@@ -3,12 +3,20 @@
 
 #define BLK_SIZE 128
 #define KEY_ROUNDS 10
+#define BSIZE 16 << 4
 
-void dump_block(char*);
-void gen_subkeys(char* key, char** subkeys);
+typedef unsigned char uchar_t;
 
-void circular_rotate(char* msg, int start, int end);
-char* encrypt(char* msg, char* key);
-char* decrypt(char* msg, char* key);
+extern uchar_t minv[BSIZE];
+extern uchar_t sbox[BSIZE];
+
+void hexdump(uchar_t *, int r, int c);
+void dump_block(uchar_t *);
+void gen_subkeys(uchar_t * key, uchar_t ** subkeys);
+
+
+void circular_rotate(uchar_t * msg, int start, int end);
+uchar_t *encrypt(uchar_t * msg, uchar_t * key);
+uchar_t *decrypt(uchar_t * msg, uchar_t * key);
 
 #endif                          /* AES_H */
