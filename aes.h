@@ -16,6 +16,7 @@ void dump_block(uchar_t *);
 void gen_subkeys(uchar_t * key, uchar_t ** subkeys);
 void bsub(uchar_t * msg, int mlen);
 
+void transpose(uchar_t * arr, int n);
 void circular_rotate(uchar_t * msg, int start, int end);
 
 uchar_t *encrypt(uchar_t * msg, uchar_t * key);

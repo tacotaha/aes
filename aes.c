@@ -97,6 +97,16 @@ void bsub(uchar_t * msg, int mlen) {
   }
 }
 
+void transpose(uchar_t * arr, int n) {
+  uchar_t t;
+  for (int i = 0; i < n - 1; ++i)
+    for (int j = i + 1; j < n; ++j) {
+      t = arr[(i << 2) + j];
+      arr[(i << 2) + j] = arr[(j << 2) + i];
+      arr[(j << 2) + i] = t;
+    }
+}
+
 uchar_t *encrypt(uchar_t * msg, uchar_t * key) {
   return 0;
 }

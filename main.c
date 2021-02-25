@@ -20,5 +20,6 @@ int main(int argc, char **argv) {
   hexdump(tmp, 1, mlen);
 
   free(tmp);
+
   return 0;
 }
