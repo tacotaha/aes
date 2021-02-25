@@ -1,25 +1,21 @@
 #ifndef AES_H
 #define AES_H
 
-#define BLK_SIZE 128
-#define KEY_ROUNDS 10
-#define BSIZE 16 << 4
-
-typedef unsigned char uchar_t;
-
-extern uchar_t minv[BSIZE];
-extern uchar_t sbox[BSIZE];
+#include "tables.h"
 
 void hexdump(uchar_t *, int r, int c);
-void dump_block(uchar_t *);
+static inline void dump_blk(uchar_t * b) {
+  hexdump(b, 4, 4);
+}
 
-void gen_subkeys(uchar_t * key, uchar_t ** subkeys);
-void bsub(uchar_t * msg, int mlen);
+void byte_sub(uchar_t *);
+void shift_rows(uchar_t *);
+void mix_cols(uchar_t *);
 
-void transpose(uchar_t * arr, int n);
-void circular_rotate(uchar_t * msg, int start, int end);
+void transpose(uchar_t *);
+void crot(uchar_t * blk, int start, int end);
 
-uchar_t *encrypt(uchar_t * msg, uchar_t * key);
-uchar_t *decrypt(uchar_t * msg, uchar_t * key);
+void encrypt(uchar_t * blk, uchar_t * key);
+void decrypt(uchar_t * blk, uchar_t * key);
 
 #endif                          /* AES_H */

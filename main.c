@@ -1,25 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "aes.h"
 
 int main(int argc, char **argv) {
-  const char *msg = "Hello World!";
-  //const char *key = "password";
-  const int mlen = strlen(msg);
+  char *msg, *key;
+  int mlen, num_blks;
 
-  uchar_t *tmp = malloc(sizeof(uchar_t) * mlen);
+  msg = "Hello World!!!!!";
+  key = "password";
 
-  memcpy(tmp, msg, mlen);
+  mlen = strlen(msg);
+  num_blks = ceil(mlen / 16.0);
 
-  printf("%s\n", tmp);
+  uchar_t *blk, *arr = malloc(sizeof(uchar_t) * mlen);
+  memcpy(arr, msg, mlen);
 
-  hexdump(tmp, 1, mlen);
-  bsub(tmp, mlen);
-  hexdump(tmp, 1, mlen);
+  for (int i = 0; i < 16; ++i)
+    arr[i] = i;
 
-  free(tmp);
+  printf("Message: %s\n", arr);
+  printf("Message Len: %d\n", mlen);
+  printf("Num Blocks: %d\n", num_blks);
+
+  for (int i = 0; i < num_blks; ++i) {
+    blk = arr + (i << 4);
+    encrypt(blk, (uchar_t *) key);
+  }
+
+  free(arr);
 
   return 0;
 }
