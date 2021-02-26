@@ -31,13 +31,16 @@ void crot(uchar_t * msg, int start, int end) {
   msg[end - 1] = tmp;
 }
 
-void byte_sub(uchar_t * blk) {
+void sub_byte(uchar_t * blk) {
   unsigned short r, c;
-  for (int i = 0; i < 16; ++i) {
-    r = ((blk[i] & 0xf0) >> 4);
-    c = blk[i] & 0xf;
-    blk[i] = sbox[(r << 4) + c];
-  }
+  r = ((*blk & 0xf0) >> 4);
+  c = *blk & 0xf;
+  *blk = sbox[(r << 4) + c];
+}
+
+void byte_sub(uchar_t * blk) {
+  for (int i = 0; i < 16; ++i)
+    sub_byte(blk + i);
 }
 
 void shift_rows(uchar_t * blk) {
@@ -65,11 +68,55 @@ void mix_cols(uchar_t * blk) {
   memcpy(blk, res, sizeof(uchar_t) << 4);
 }
 
+void g(uint32_t * v, int round) {
+  uint8_t msb = (*v & (0xff << 24)) >> 24;
+  *v <<= 8;
+  *v |= msb;
+
+  for (int i = 0; i < 4; ++i)
+    sub_byte((uchar_t *) v + i);
+
+  *v ^= rcon[round];
+}
+
+void expand_key(uchar_t * key, uint32_t * w) {
+  uint32_t temp;
+
+  for (int i = 0; i < NUM_WORDS; ++i)
+    for (int j = 0; j < 4; ++j) {
+      temp = key[4 * i + j];
+      w[i] |= (temp << (8 * (3 - j)));
+    }
+
+  for (int i = NUM_WORDS; i < KEY_EXP; ++i) {
+    temp = w[i - 1];
+    if (i % NUM_WORDS == 0)
+      g(&temp, i / NUM_WORDS - 1);
+    else if (KEY_SIZE == 256 && i % 4 == 0)
+      for (int j = 0; j < 4; ++j)
+        sub_byte((uchar_t *) & temp + j);
+    w[i] = w[i - NUM_WORDS] ^ temp;
+  }
+}
+
 void encrypt(uchar_t * blk, uchar_t * key) {
+  uint32_t *ek = malloc(KEY_EXP);
+  if (!ek)
+    return;
+
+  expand_key(key, ek);
+
+#if DEBUG
+  printf("\nExpanded Key:\n");
+  for (int i = 0; i < KEY_EXP; ++i)
+    printf("0x%02x ", ek[i]);
+  printf("\n");
+#endif
+
   transpose(blk);
 
 #if DEBUG
-  printf("Block: \n");
+  printf("\nBlock: \n");
   dump_blk(blk);
 #endif
 
@@ -93,4 +140,6 @@ void encrypt(uchar_t * blk, uchar_t * key) {
   printf("\nMix Cols: \n");
   dump_blk(blk);
 #endif
+
+  free(ek);
 }
